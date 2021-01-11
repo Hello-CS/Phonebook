@@ -1,10 +1,10 @@
+require('dotenv').config()
 const { response } = require('express')
 const express = require('express')
 const { body } = require('express-validator')
 const app = express()
 const morgan = require('morgan')
 const cors = require('cors')
-require('dotenv').config()
 const Person = require('./models/person')
 
 /*let persons = [
@@ -40,7 +40,7 @@ app.use(morgan(':method :url :status - :response-time ms :body'))
 app.get('/api/persons', (req,res) => {
     Person.find({}).then(persons => {
         res.json(persons)
-    })
+    });
 });
 
 /*app.get('/info', (req,res) => {
@@ -61,12 +61,12 @@ app.delete('/api/persons/:id', (req,res) => {
     })
 });
 
-const generateId = () => {
-    const maxId = persons.length > 0
-    ? Math.max(...persons.map(person => person.id))
+/*const generateId = () => {
+    const maxId = Person.length > 0
+    ? Math.max(...Person.map(person => person.id))
     : 0
     return maxId + 1
-}
+} */
 
 app.post('/api/persons', (req,res) => {
     const body = req.body
@@ -76,16 +76,17 @@ app.post('/api/persons', (req,res) => {
         });
     };
 
-    if (Person.find(person => person.name === body.name)) {
+   /* if (Person.find(person => person.name === body.name)) {
         return res.status(400).json({
             error: 'name already exists in phonebook'
         });
-    };
+    }; */
+    
 
     const person = new Person({
         name: body.name,
         number: body.number,
-        id: generateId()
+        //id: generateId()
     })
 
     person.save().then(savedPerson => {

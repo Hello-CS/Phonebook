@@ -15,15 +15,15 @@ mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true, useFindA
 const personSchema = new mongoose.Schema({
     name: String,
     number: String,
-    id: Number
+    //id: Number
 });
 
 personSchema.set('toJSON', {
     transform: (document,returnedObject) => {
-        returnedObject.id = returnedObject.id.toString()
+        //returnedObject.id = returnedObject.id.toString()
         delete returnedObject._id
         delete returnedObject.__v
     }
 });
 
-exports = mongoose.model('Person', personSchema)
+module.exports = mongoose.model('Person',personSchema)
