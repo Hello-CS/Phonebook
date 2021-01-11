@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config({path: './.env'})
 const { response } = require('express')
 const express = require('express')
 const { body } = require('express-validator')
