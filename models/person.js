@@ -9,13 +9,13 @@ mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true, useUnifiedTopo
     console.log('connected to MongoDB')
 })
 .catch((error) => {
-    console.log('error conencting to MongoDB', error.message)
+    console.log('error connecting to MongoDB', error.message)
 });
 
 const personSchema = new mongoose.Schema({
     name: String,
     number: String,
-    //id: Number
+    id: Number
 });
 
 personSchema.set('toJSON', {

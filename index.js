@@ -30,6 +30,7 @@ const Person = require('./models/person')
     }
 ] */
 
+
 app.use(express.static('build'))
 app.use(cors())
 app.use(express.json())
@@ -49,24 +50,31 @@ app.get('/api/persons', (req,res) => {
     <div>${Date()}</div>`)
 }); */
 
-app.get('/api/persons/:id', (req,res) => {
+app.get('/api/persons/:id', (req,res, next) => {
     Person.findById(req.params.id).then(person => {
-        res.json(person)
-    });
+        if (person) {
+            res.json(person)
+        } else {
+            res.status(404).end()
+        }
+    })
+    .catch(error => next(error))
 });
 
 app.delete('/api/persons/:id', (req,res) => {
-    Person.findById(req.params.id).then(person => {
+    Person.findByIdAndRemove(req.params.id)
+    .then(result => {
         res.status(204).end()
     })
+    .catch(error => next(error))
 });
 
-/*const generateId = () => {
+const generateId = () => {
     const maxId = Person.length > 0
     ? Math.max(...Person.map(person => person.id))
     : 0
     return maxId + 1
-} */
+} 
 
 app.post('/api/persons', (req,res) => {
     const body = req.body
@@ -76,7 +84,7 @@ app.post('/api/persons', (req,res) => {
         });
     };
 
-   /* if (Person.find(person => person.name === body.name)) {
+   /* ==if (Person.find(person => person.name === body.name)) {
         return res.status(400).json({
             error: 'name already exists in phonebook'
         });
@@ -86,13 +94,29 @@ app.post('/api/persons', (req,res) => {
     const person = new Person({
         name: body.name,
         number: body.number,
-        //id: generateId()
+        id: generateId()
     })
 
     person.save().then(savedPerson => {
         res.json(savedPerson)
     });
 });
+
+const unknownEndpoint = (req,res) => {
+    res.status(404).send({error: 'unknown endpoint'})
+}
+
+app.use(unknownEndpoint)
+
+const errorHandler = (error, req, res, next) => {
+    console.error(error.message)
+    if (error.name === 'CastError') {
+        return res.status(400).send({error: 'malformatted id'})
+    }
+    next(error)
+}
+app.use(errorHandler)
+
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
