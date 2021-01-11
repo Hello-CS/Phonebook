@@ -4,8 +4,8 @@ const { body } = require('express-validator')
 const app = express()
 const morgan = require('morgan')
 const cors = require('cors')
-const Person = require('./models/person')
 require('dotenv').config()
+const Person = require('./models/person')
 
 /*let persons = [
     { 
