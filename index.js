@@ -1,4 +1,4 @@
-const dotenv = require('dotenv').config()
+require('dotenv').config()
 const { response } = require('express')
 const express = require('express')
 const { body } = require('express-validator')
@@ -38,8 +38,6 @@ morgan.token('body', (req,res) => JSON.stringify(req.body));
 app.use(morgan(':method :url :status - :response-time ms :body'))
 
 app.get('/api/persons', (req,res) => {
-    console.log('test')
-    console.log(process.env.MONGODB_URI)
     Person.find({}).then(persons => {
         res.json(persons)
     });
