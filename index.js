@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config({path: require('find-config')('.env')})
 const { response } = require('express')
 const express = require('express')
 const { body } = require('express-validator')
@@ -94,7 +94,7 @@ app.post('/api/persons', (req,res) => {
     });
 });
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)
 });
