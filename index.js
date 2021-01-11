@@ -69,12 +69,12 @@ app.delete('/api/persons/:id', (req,res) => {
     .catch(error => next(error))
 });
 
-const generateId = () => {
-    const maxId = Person.length > 0
-    ? Math.max(...Person.map(person => person.id))
+/*const generateId = () => {
+    const maxId = Person.count({}) > 0
+    ? Math.max(...Person.mapReduce(person => person.id))
     : 0
     return maxId + 1
-} 
+} */
 
 app.post('/api/persons', (req,res) => {
     const body = req.body
@@ -93,8 +93,7 @@ app.post('/api/persons', (req,res) => {
 
     const person = new Person({
         name: body.name,
-        number: body.number,
-        id: generateId()
+        number: body.number
     })
 
     person.save().then(savedPerson => {
@@ -118,7 +117,7 @@ const errorHandler = (error, req, res, next) => {
 app.use(errorHandler)
 
 
-const PORT = process.env.PORT
+const PORT = 3002
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)
 });

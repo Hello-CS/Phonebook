@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 
-
-
 console.log('connecting to', process.env.MONGODB_URI);
 
 mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true})
@@ -14,13 +12,12 @@ mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true, useUnifiedTopo
 
 const personSchema = new mongoose.Schema({
     name: String,
-    number: String,
-    id: Number
+    number: String
 });
 
 personSchema.set('toJSON', {
     transform: (document,returnedObject) => {
-        //returnedObject.id = returnedObject.id.toString()
+        returnedObject.id = returnedObject._id.toString()
         delete returnedObject._id
         delete returnedObject.__v
     }
