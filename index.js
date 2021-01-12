@@ -65,12 +65,6 @@ app.post('/api/persons', (req,res) => {
         });
     };
 
-    if (Person.find({name: body.name, number: body.number})) {
-        return res.status(400).json({
-            error: 'Duplicate entry'
-        })
-    }
-
     const person = new Person({
         name: body.name,
         number: body.number
