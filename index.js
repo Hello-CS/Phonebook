@@ -7,30 +7,6 @@ const morgan = require('morgan')
 const cors = require('cors')
 const Person = require('./models/person')
 
-/*let persons = [
-    { 
-        "name": "Arto Hellas", 
-        "number": "040-123456",
-        "id": 1
-        },
-    { 
-        "name": "Ada Lovelace", 
-        "number": "39-44-5323523",
-        "id": 2
-        },
-    { 
-        "name": "Dan Abramov", 
-        "number": "12-43-234345",
-        "id": 3
-        },
-    { 
-        "name": "Mary Poppendieck", 
-        "number": "39-23-6423122",
-        "id": 4
-    }
-] */
-
-
 app.use(express.static('build'))
 app.use(cors())
 app.use(express.json())
@@ -61,6 +37,16 @@ app.get('/api/persons/:id', (req,res, next) => {
     .catch(error => next(error))
 });
 
+/*app.put('/api/persons', (req , res, next) => {
+    const body = req.body
+    Person.findOneAndUpdate({name:body.name},{number:body.number})
+    .then(result => {
+        res.status(204).end()
+    })
+    .catch(error => next(error))
+}); */    
+    
+
 app.delete('/api/persons/:id', (req,res) => {
     Person.findByIdAndRemove(req.params.id)
     .then(result => {
@@ -69,27 +55,21 @@ app.delete('/api/persons/:id', (req,res) => {
     .catch(error => next(error))
 });
 
-/*const generateId = () => {
-    const maxId = Person.count({}) > 0
-    ? Math.max(...Person.mapReduce(person => person.id))
-    : 0
-    return maxId + 1
-} */
-
 app.post('/api/persons', (req,res) => {
+    console.log(req)
     const body = req.body
+    console.log(body)
     if (!body.name || !body.number) {
         return res.status(400).json({
             error: 'name/number is missing'
         });
     };
 
-   /* ==if (Person.find(person => person.name === body.name)) {
+    if (Person.find({name: body.name, number: body.number})) {
         return res.status(400).json({
-            error: 'name already exists in phonebook'
-        });
-    }; */
-    
+            error: 'Duplicate entry'
+        })
+    }
 
     const person = new Person({
         name: body.name,
@@ -98,7 +78,8 @@ app.post('/api/persons', (req,res) => {
 
     person.save().then(savedPerson => {
         res.json(savedPerson)
-    });
+    })
+    .catch(error => next(error))
 });
 
 const unknownEndpoint = (req,res) => {
@@ -111,6 +92,8 @@ const errorHandler = (error, req, res, next) => {
     console.error(error.message)
     if (error.name === 'CastError') {
         return res.status(400).send({error: 'malformatted id'})
+    } else if (error.name === 'ValidationError') {
+        return res.status(400).json({ error:error.message})
     }
     next(error)
 }
@@ -121,3 +104,9 @@ const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)
 });
+
+/*
+Things to try:
+Stop useEffect infinite GET request
+Implement Update via ID for FE and BE
+*/
