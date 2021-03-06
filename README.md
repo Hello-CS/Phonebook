@@ -1,1 +1,3 @@
-Link to online application (backend) - https://lit-river-92425.herokuapp.com/api/persons
+Link to full web application: https://phonebook-by-cs.herokuapp.com
+
+This repository contains of the backend functionalities of the application.
